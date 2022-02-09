@@ -135,6 +135,7 @@ router.post("/webhook", (req, res) => {
       );
     }
   }
+  res.sendStatus(200);
 });
 
 app.use("/", router);
