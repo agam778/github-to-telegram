@@ -1,8 +1,8 @@
 {
-  "name": "gh-webhooks-tg",
+  "name": "github-to-telegram",
   "packageManager": "yarn@3.1.1",
   "version": "0.1.0",
-  "description": "Integrate your GitHub Repository events with Telegram",
+  "description": "Integrate your GitHub Repository events with Telegram Channel/Group using GitHub Webhooks!",
   "main": "index.js",
   "scripts": {
     "start": "yarn node index.js"

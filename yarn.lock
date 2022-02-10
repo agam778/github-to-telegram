@@ -423,9 +423,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gh-webhooks-tg@workspace:.":
+"github-to-telegram@workspace:.":
   version: 0.0.0-use.local
-  resolution: "gh-webhooks-tg@workspace:."
+  resolution: "github-to-telegram@workspace:."
   dependencies:
     body-parser: ^1.19.1
     dotenv: ^16.0.0

@@ -19,14 +19,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
     ],
     "dependencyTreeRoots": [
       {
-        "name": "gh-webhooks-tg",
+        "name": "github-to-telegram",
         "reference": "workspace:."
       }
     ],
     "enableTopLevelFallback": true,
     "ignorePatternData": "(^(?:\\.yarn\\/sdks(?:\\/(?!\\.{1,2}(?:\\/|$))(?:(?:(?!(?:^|\\/)\\.{1,2}(?:\\/|$)).)*?)|$))$)",
     "fallbackExclusionList": [
-      ["gh-webhooks-tg", ["workspace:."]]
+      ["github-to-telegram", ["workspace:."]]
     ],
     "fallbackPool": [
     ],
@@ -558,11 +558,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
-      ["gh-webhooks-tg", [
+      ["github-to-telegram", [
         ["workspace:.", {
           "packageLocation": "./",
           "packageDependencies": [
-            ["gh-webhooks-tg", "workspace:."],
+            ["github-to-telegram", "workspace:."],
             ["body-parser", "npm:1.19.1"],
             ["dotenv", "npm:16.0.0"],
             ["express", "npm:4.17.2"],

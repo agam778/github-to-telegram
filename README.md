@@ -1,5 +1,5 @@
-# gh-webhooks-tg
-Integrate your GitHub Repo events with Telegram!
+# GitHub To Telegram
+Integrate your GitHub Repo events with Telegram Channel/Chat using GitHub Webhooks!
 
 # Self Deploy
 - Fork this repo

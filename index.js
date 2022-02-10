@@ -4,7 +4,6 @@ const dotenv = require("dotenv");
 const fs = require("fs");
 const router = express.Router();
 const { Telegraf } = require("telegraf");
-const { send } = require("process");
 
 if (fs.existsSync(".env")) {
   dotenv.config();
