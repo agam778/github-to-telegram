@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const fs = require("fs");
 const router = express.Router();
 const { Telegraf } = require("telegraf");
+const { send } = require("process");
 
 if (fs.existsSync(".env")) {
   dotenv.config();
@@ -19,10 +20,20 @@ const PORT = process.env.PORT || 5000;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-async function sendMessage(message) {
+async function sendMessage(message, buttontext, buttonurl) {
   await bot.telegram.sendMessage(TELEGRAM_CHAT_ID, message, {
-    parse_mode: "markdown",
+    parse_mode: "html",
     disable_web_page_preview: true,
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: buttontext,
+            url: buttonurl,
+          },
+        ],
+      ],
+    },
   });
 }
 
@@ -30,163 +41,80 @@ router.post("/webhook", (req, res) => {
   let data = req.body;
   if (data.starred_at) {
     sendMessage(
-      `A New star has been added! ⭐\n\n
-      - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-      - Starred by: [${data.sender.login}](${data.sender.html_url})\n
-      - Stars Count: \`${data.repository.stargazers_count}\``
+      `<a href="${data.repository.html_url}"><b>\[${data.repository.full_name}\] New Star Added</b></a>\nStarred by: ${data.sender.login}\nTotal Stars: <code>${data.repository.stargazers_count}</code>`,
+      "View Repository",
+      data.repository.html_url
     );
   } else if (data.head_commit) {
-    let commitdate = new Date(data.head_commit.timestamp);
-    let commitdateformatted =
-        commitdate.getDate() +
-        "/" +
-        (commitdate.getMonth() + 1) +
-        "/" +
-        commitdate.getFullYear(),
-      commitmessage = data.head_commit.message;
     sendMessage(
-      `A New commit has been pushed! 💥\n\n
-      - Repository: [${data.repository.full_name}](${
-        data.repository.html_url
-      })\n
-      - Commit Date: \`${commitdateformatted}\`\n
-      - Commit Message: \`${commitmessage}\`\n
-      - Commit Author: [${data.head_commit.author.name}](${
-        data.head_commit.author.html_url
-      })\n
-      - Commit Branch: \`${data.ref.split("/")[2]}\`\n
-      - Commit URL: [HERE](${data.head_commit.url})`
+      `<a href="${data.repository.html_url}"><b>\[${data.repository.name}:${
+        data.ref.split("/")[2]
+      }\] 1 new commit</b></a>\n<code>${data.after.substring(0, 7)}</code> ${
+        data.head_commit.message
+      } - ${data.head_commit.author.username}`,
+      "View Commit",
+      data.head_commit.url
     );
   } else if (data.forkee) {
     sendMessage(
-      `A New Fork has been created! 🍴\n\n
-      - Forked Repository: [${data.forkee.full_name}](${data.forkee.repository.html_url})\n
-      - Forked From: [${data.repository.full_name}](${data.repository.html_url})`
+      `<a href="${data.repository.html_url}/network/members><b>[${data.repository.full_name}] Fork Created: [${data.forkee.full_name}]</b></a>"`,
+      "View Fork",
+      data.forkee.html_url
     );
   } else if (data.action && data.issue) {
-    if (data.action === "opened") {
+    if (
+      data.action === "opened" ||
+      data.action === "closed" ||
+      data.action === "reopened" ||
+      data.action === "locked" ||
+      data.action === "unlocked"
+    ) {
       sendMessage(
-        `An issue has been opened! 🐛\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Issue Title: \`${data.issue.title}\`\n
-        - Issue Author: [${data.issue.user.login}](${data.issue.user.html_url})\n
-        - Issue URL: [HERE](${data.issue.html_url})`
-      );
-    } else if (data.action === "closed") {
-      sendMessage(
-        `An issue has been closed! 🐛\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Issue Title: \`${data.issue.title}\`\n
-        - Issue URL: [HERE](${data.issue.html_url})`
-      );
-    } else if (data.action === "reopened") {
-      sendMessage(
-        `An issue has been reopened! 🐛\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Issue Title: \`${data.issue.title}\`\n
-        - Issue URL: [HERE](${data.issue.html_url})`
-      );
-    } else if (data.action === "locked") {
-      sendMessage(
-        `An issue has been locked! 🐛\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Issue Title: \`${data.issue.title}\`\n
-        - Issue URL: [HERE](${data.issue.html_url})`
-      );
-    } else if (data.action === "unlocked") {
-      sendMessage(
-        `An issue has been unlocked! 🐛\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Issue Title: \`${data.issue.title}\`\n
-        - Issue URL: [HERE](${data.issue.html_url})`
+        `<a href="${data.issue.url}"><b>\[${
+          data.repository.full_name
+        }\] Issue ${data.action}: #${
+          data.issue.number
+        } ${data.issue.title.substring(0, 10)}...</b></a>\n${
+          data.issue.user.login
+        } - <code>${data.issue.body.substring(0, 120)}...</code>`,
+        "View Issue",
+        data.issue.html_url
       );
     }
   } else if (data.action && data.pull_request) {
-    if (data.action === "opened") {
+    if (
+      data.action === "opened" ||
+      data.action === "closed" ||
+      data.action === "locked" ||
+      data.action === "unlocked" ||
+      data.action === "reopened"
+    ) {
       sendMessage(
-        `A pull request has been opened! 🐛\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Pull Request Title: \`${data.pull_request.title}\`\n
-        - Pull Request URL: [HERE](${data.pull_request.html_url})`
-      );
-    } else if (data.action === "closed") {
-      sendMessage(
-        `A pull request has been closed/merged! 🐛\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Pull Request Title: \`${data.pull_request.title}\`\n
-        - Pull Request URL: [HERE](${data.pull_request.html_url})`
-      );
-    } else if (data.action === "locked") {
-      sendMessage(
-        `A pull request has been locked! 🐛\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Pull Request Title: \`${data.pull_request.title}\`\n
-        - Pull Request URL: [HERE](${data.pull_request.html_url})`
-      );
-    } else if (data.action === "unlocked") {
-      sendMessage(
-        `A pull request has been unlocked! 🐛\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Pull Request Title: \`${data.pull_request.title}\`\n
-        - Pull Request URL: [HERE](${data.pull_request.html_url})`
-      );
-    } else if (data.action === "reopened") {
-      sendMessage(
-        `A pull request has been reopened! 🐛\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Pull Request Title: \`${data.pull_request.title}\`\n
-        - Pull Request URL: [HERE](${data.pull_request.html_url})`
+        `<a href="${data.pull_request.html_url}"><b>[${
+          data.repository.full_name
+        }] Pull request ${data.action}: #${
+          data.number
+        } ${data.pull_request.title.substring(0, 10)}...</b></a>\n${
+          data.pull_request.user.login
+        } - <code>${data.pull_request.body.substring(0, 120)}...</code>`,
+        "View Pull Request",
+        `${data.pull_request.html_url}`
       );
     }
   } else if (data.action && data.release) {
-    if (data.action === "published") {
+    if (
+      data.action === "published" ||
+      data.action === "unpublished" ||
+      data.action === "created" ||
+      data.action === "edited" ||
+      data.action === "deleted" ||
+      data.action === "prereleased" ||
+      data.action === "released"
+    ) {
       sendMessage(
-        `A release has been published! 🎉\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Release Title: \`${data.release.name}\`\n
-        - Release URL: [HERE](${data.release.html_url})`
-      );
-    } else if (data.action === "unpublished") {
-      sendMessage(
-        `A release has been unpublished! \n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Release Title: \`${data.release.name}\`\n
-        - Release URL: [HERE](${data.release.html_url})`
-      );
-    } else if (data.action === "created") {
-      sendMessage(
-        `A release has been created! 🎉\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Release Title: \`${data.release.name}\`\n
-        - Release URL: [HERE](${data.release.html_url})`
-      );
-    } else if (data.action === "edited") {
-      sendMessage(
-        `A release has been edited!\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Release Title: \`${data.release.name}\`\n
-        - Release URL: [HERE](${data.release.html_url})`
-      );
-    } else if (data.action === "deleted") {
-      sendMessage(
-        `A release has been deleted!\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Release Title: \`${data.release.name}\`\n
-        - Release URL: [HERE](${data.release.html_url})`
-      );
-    } else if (data.action === "prereleased") {
-      sendMessage(
-        `A release has been prereleased!\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Release Title: \`${data.release.name}\`\n
-        - Release URL: [HERE](${data.release.html_url})`
-      );
-    } else if (data.action === "released") {
-      sendMessage(
-        `A release has been released!\n\n
-        - Repository: [${data.repository.full_name}](${data.repository.html_url})\n
-        - Release Title: \`${data.release.name}\`\n
-        - Release URL: [HERE](${data.release.html_url})`
+        `<a href="${data.release.html_url}"><b>[${data.repository.full_name}] New release ${data.action}: ${data.release.tag_name}</b></a>`,
+        "View Release",
+        data.release.html_url
       );
     }
   }

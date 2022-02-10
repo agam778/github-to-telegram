@@ -1,6 +1,19 @@
 {
   "name": "gh-webhooks-tg",
   "packageManager": "yarn@3.1.1",
+  "version": "0.1.0",
+  "description": "Integrate your GitHub Repository events with Telegram",
+  "main": "index.js",
+  "scripts": {
+    "start": "yarn node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agam778/gh-webhooks-tg"
+  },
+  "author": "Agampreet Singh",
+  "license": "GNU General Public License v3.0",
+  "homepage": "https://github.com/agam778/gh-webhooks-tg#readme",
   "dependencies": {
     "body-parser": "^1.19.1",
     "dotenv": "^16.0.0",
