@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const fs = require("fs");
 const router = express.Router();
 const { Telegraf } = require("telegraf");
+const crypto = require("crypto");
 
 if (fs.existsSync(".env")) {
   dotenv.config();
@@ -15,6 +16,8 @@ const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 const PORT = process.env.PORT || 5000;
+
+const secret = process.env.WEBHOOK_SECRET;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -37,6 +40,17 @@ async function sendMessage(message, buttontext, buttonurl) {
 }
 
 router.post("/webhook", (req, res) => {
+  const expectedSignature =
+    "sha256=" +
+    crypto
+      .createHmac("sha256", secret)
+      .update(JSON.stringify(req.body))
+      .digest("hex");
+  const signature = req.headers["x-hub-signature-256"];
+  if (!signature) {
+  } else if (signature !== expectedSignature) {
+    return res.sendStatus(403);
+  }
   let data = req.body;
   if (data.starred_at) {
     sendMessage(

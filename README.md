@@ -9,7 +9,8 @@ Integrate your GitHub Repo events with Telegram Channel/Chat using GitHub Webhoo
 - Make a .env file/fill your environment variables like given in [`.env.sample`](./.env.sample)
 - Install all dependencies - `yarn; yarn install`
 - Run the bot - `yarn start`
-- Now go to your GitHub Repo's settings and add a webhook to your repo, fill the Payload URL with `https://<your-domain>/webhook` and Content Type as `application/json`. Keep the secret blank as it hasn't been implemented yet.
+- Now go to your GitHub Repo's settings and add a webhook to your repo, fill the Payload URL with `https://<your-domain>/webhook` and Content Type as `application/json`.
+- Enter Secret which you have entered in `.env` file.
 - Then save your webhook and tada! You are ready to go.
 
 Try Starring your repo/making a commit etc. and you will see the bot sending the message in the chat/channel!
