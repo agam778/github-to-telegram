@@ -54,15 +54,15 @@ router.post("/webhook", (req, res) => {
   let data = req.body;
   if (data.starred_at) {
     sendMessage(
-      `<a href="${data.repository.html_url}"><b>\[${data.repository.full_name}\] New Star Added</b></a>\nStarred by: ${data.sender.login}\nTotal Stars: <code>${data.repository.stargazers_count}</code>`,
+      `<b>\[${data.repository.full_name}\] New Star Added</b>\nStarred by: ${data.sender.login}\nTotal Stars: <code>${data.repository.stargazers_count}</code>`,
       "View Repository",
       data.repository.html_url
     );
   } else if (data.head_commit) {
     sendMessage(
-      `<a href="${data.repository.html_url}"><b>\[${data.repository.name}:${
+      `<b>\[${data.repository.name}:${
         data.ref.split("/")[2]
-      }\] 1 new commit</b></a>\n<code>${data.after.substring(0, 7)}</code> ${
+      }\] 1 new commit</b>\n<code>${data.after.substring(0, 7)}</code> ${
         data.head_commit.message
       } - ${data.head_commit.author.username}`,
       "View Commit",
@@ -70,7 +70,7 @@ router.post("/webhook", (req, res) => {
     );
   } else if (data.forkee) {
     sendMessage(
-      `<a href="${data.repository.html_url}/network/members><b>[${data.repository.full_name}] Fork Created: [${data.forkee.full_name}]</b></a>"`,
+      `<b>[${data.repository.full_name}] Fork Created: [${data.forkee.full_name}]</b>"`,
       "View Fork",
       data.forkee.html_url
     );
@@ -83,11 +83,9 @@ router.post("/webhook", (req, res) => {
       data.action === "unlocked"
     ) {
       sendMessage(
-        `<a href="${data.issue.url}"><b>\[${
-          data.repository.full_name
-        }\] Issue ${data.action}: #${
+        `<b>\[${data.repository.full_name}\] Issue ${data.action}: #${
           data.issue.number
-        } ${data.issue.title.substring(0, 10)}...</b></a>\n${
+        } ${data.issue.title.substring(0, 10)}...</b>\n${
           data.issue.user.login
         } - <code>${data.issue.body.substring(0, 120)}...</code>`,
         "View Issue",
@@ -103,11 +101,9 @@ router.post("/webhook", (req, res) => {
       data.action === "reopened"
     ) {
       sendMessage(
-        `<a href="${data.pull_request.html_url}"><b>[${
-          data.repository.full_name
-        }] Pull request ${data.action}: #${
+        `<b>[${data.repository.full_name}] Pull request ${data.action}: #${
           data.number
-        } ${data.pull_request.title.substring(0, 10)}...</b></a>\n${
+        } ${data.pull_request.title.substring(0, 10)}...</b>\n${
           data.pull_request.user.login
         } - <code>${data.pull_request.body.substring(0, 120)}...</code>`,
         "View Pull Request",
@@ -125,9 +121,15 @@ router.post("/webhook", (req, res) => {
       data.action === "released"
     ) {
       sendMessage(
-        `<a href="${data.release.html_url}"><b>[${data.repository.full_name}] New release ${data.action}: ${data.release.tag_name}</b></a>`,
+        `<b>[${data.repository.full_name}] New release ${data.action}: ${data.release.tag_name}</b>`,
         "View Release",
         data.release.html_url
+      );
+    } else if (data.ref && data.ref_type === "branch" && master_branch) {
+      sendMessage(
+        `<b>[${data.repository.full_name}] New branch created: ${data.ref}</b>`,
+        "View Branch",
+        `${data.repository.html_url}/tree/${data.ref}`
       );
     }
   }
