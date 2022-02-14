@@ -130,6 +130,15 @@ router.post("/webhook", (req, res) => {
         data.release.html_url
       );
     }
+  } else if (
+    (data.action === "requested" && data.workflow_run) ||
+    (data.action === "completed" && data.workflow_run)
+  ) {
+    sendMessage(
+      `<a href="${data.workflow_run.html_url}"><b>[${data.repository.full_name}] Workflow ${data.action}: ${data.workflow.name}</b></a>`,
+      "View Workflow",
+      data.workflow_run.html_url
+    );
   }
   res.sendStatus(200);
 });
