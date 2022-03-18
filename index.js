@@ -139,8 +139,6 @@ router.post("/webhook", (req, res) => {
       "View Workflow",
       data.workflow_run.html_url
     );
-  } else {
-    console.log("Unknown event: ", data);
   }
   res.sendStatus(200);
 });
