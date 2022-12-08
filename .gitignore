@@ -1,7 +1,9 @@
-/.yarn/*
-!/.yarn/patches
-!/.yarn/plugins
-!/.yarn/releases
-!/.yarn/sdks
-!/.yarn/cache
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+node_modules
 .env
