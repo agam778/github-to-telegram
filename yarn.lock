@@ -462,7 +462,7 @@ __metadata:
     dotenv: ^16.0.3
     express: ^4.18.2
     request: ^2.88.2
-    telegraf: ^4.11.2
+    telegraf: ^4.12.2
   languageName: unknown
   linkType: soft
 
@@ -681,9 +681,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.7":
-  version: 2.6.7
-  resolution: "node-fetch@npm:2.6.7"
+"node-fetch@npm:^2.6.8":
+  version: 2.6.9
+  resolution: "node-fetch@npm:2.6.9"
   dependencies:
     whatwg-url: ^5.0.0
   peerDependencies:
@@ -691,7 +691,7 @@ __metadata:
   peerDependenciesMeta:
     encoding:
       optional: true
-  checksum: 8d816ffd1ee22cab8301c7756ef04f3437f18dace86a1dae22cf81db8ef29c0bf6655f3215cb0cdb22b420b6fe141e64b26905e7f33f9377a7fa59135ea3e10b
+  checksum: acb04f9ce7224965b2b59e71b33c639794d8991efd73855b0b250921382b38331ffc9d61bce502571f6cc6e11a8905ca9b1b6d4aeb586ab093e2756a1fd190d0
   languageName: node
   linkType: hard
 
@@ -942,21 +942,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"telegraf@npm:^4.11.2":
-  version: 4.11.2
-  resolution: "telegraf@npm:4.11.2"
+"telegraf@npm:^4.12.2":
+  version: 4.12.2
+  resolution: "telegraf@npm:4.12.2"
   dependencies:
     abort-controller: ^3.0.0
     debug: ^4.3.4
     mri: ^1.2.0
-    node-fetch: ^2.6.7
+    node-fetch: ^2.6.8
     p-timeout: ^4.1.0
     safe-compare: ^1.1.4
     sandwich-stream: ^2.0.2
-    typegram: ^4.1.0
+    typegram: ^4.3.0
   bin:
     telegraf: lib/cli.mjs
-  checksum: 81662e6fe37258a40317a3fcd8b1e4f8e04439b12ef8387bcaccaea4163bb9f5eb7534a311a524e59320f975e34dacfc0d34425b10269aed13d98b9f3ae05aa2
+  checksum: 5991344875382523596eaae1d72677f76cbc6b359cc5c0f4dbcba8643ada1704eb5298538500661bdf7b05b72121216ab5d4a23d0f60248be3c62406581621b3
   languageName: node
   linkType: hard
 
@@ -1010,10 +1010,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typegram@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "typegram@npm:4.1.0"
-  checksum: 76329802a4f84d58aa5ab76df1630f85f695a94b109f758d02f7f3990b90f6d5cf8c0eea7fc66ecbc7c6848cc7eee45242d691a2a7f169ac21b226129e727b97
+"typegram@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "typegram@npm:4.3.0"
+  checksum: 77d4738257230df9fa092ba9c5b29cde2954f2dd96f962a8568175ef391e5ba8304a8d27307958ff1ec45556ffb774df977ccc71c2f4cf33d9f6e350956e91b8
   languageName: node
   linkType: hard
 
