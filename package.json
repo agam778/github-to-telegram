@@ -1,6 +1,6 @@
 {
   "name": "github-to-telegram",
-  "packageManager": "yarn@3.1.1",
+  "packageManager": "yarn@3.5.0",
   "version": "0.1.0",
   "description": "Integrate your GitHub Repository events with Telegram Channel/Group using GitHub Webhooks!",
   "main": "index.js",
