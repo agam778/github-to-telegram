@@ -131,14 +131,25 @@ router.post("/webhook", (req, res) => {
       );
     }
   } else if (
-    (data.action === "requested" && data.workflow_run) ||
-    (data.action === "completed" && data.workflow_run)
+    process.env.DISABLE_WORKFLOW_NOTIFICATIONS !== "true" ||
+    !process.env.DISABLE_WORKFLOW_NOTIFICATIONS
   ) {
-    sendMessage(
-      `<a href="${data.workflow_run.html_url}"><b>[${data.repository.full_name}] Workflow ${data.action}: ${data.workflow.name}</b></a>`,
-      "View Workflow",
-      data.workflow_run.html_url
-    );
+    if (process.env.DISABLE_WORKFLOW_NOTIFICATIONS_NAME) {
+      const workflowNames =
+        process.env.DISABLE_WORKFLOW_NOTIFICATIONS_NAME.split(",");
+      if (
+        (data.action === "requested" && data.workflow_run) ||
+        (data.action === "completed" && data.workflow_run)
+      ) {
+        if (!workflowNames.includes(data.workflow.name)) {
+          sendMessage(
+            `<a href="${data.workflow_run.html_url}"><b>[${data.repository.full_name}] Workflow ${data.action}: ${data.workflow.name}</b></a>`,
+            "View Workflow",
+            data.workflow_run.html_url
+          );
+        }
+      }
+    }
   }
   res.sendStatus(200);
 });
